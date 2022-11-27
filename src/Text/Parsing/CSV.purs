@@ -1,15 +1,17 @@
-module Text.Parsing.CSV where
+module Parsing.CSV where
 
 import Prelude hiding (between)
-import Data.Map as M
+
 import Control.Alt ((<|>))
 import Data.Array (some)
 import Data.Foldable (all)
 import Data.List (List(..), zip)
+import Data.List.NonEmpty as NEL
+import Data.Map as M
 import Data.String.CodeUnits (fromCharArray, toCharArray, singleton)
-import Text.Parsing.Parser (Parser)
-import Text.Parsing.Parser.Combinators (sepEndBy, sepBy1, between)
-import Text.Parsing.Parser.String (eof, satisfy, string)
+import Parsing (Parser)
+import Parsing.Combinators (between, sepBy, sepBy1, sepEndBy)
+import Parsing.String (eof, satisfy, string)
 
 type P a = Parser String a
 
@@ -46,7 +48,7 @@ makeField :: (P String -> P String) -> P String -> P String -> P String
 makeField qoutes qoutedChars purechars = qoutes qoutedChars <|> purechars <|> string ""
 
 makeRow :: String -> P String -> P (List String)
-makeRow s f = f `sepBy1` string s
+makeRow s f = f `sepBy` string s
 
 makeFile :: String -> P (List String) -> P (List (List String))
 makeFile s r = r `sepEndBy` string s <* eof
@@ -61,12 +63,12 @@ makeFileHeaded file = do
     mkRow header row' = M.fromFoldable $ zip header row'
 
 makeParsers :: Char -> String -> String -> Parsers String
-makeParsers quote seperator eol = do
+makeParsers quote separator eol = do
   let quoted' = makeQuoted $ singleton quote
-  let chars' = makeChars $ (singleton quote) <> seperator <> eol
+  let chars' = makeChars $ (singleton quote) <> separator <> eol
   let qchars' = makeQchars quote
   let field' = makeField quoted' qchars' chars'
-  let row' = makeRow seperator field'
+  let row' = makeRow separator field'
   let file' = makeFile eol row'
   let fileHeaded' = makeFileHeaded file'
   {

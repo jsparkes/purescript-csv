@@ -48,6 +48,6 @@ type Parsers a =
 }
 ```
 
-In this specific case using `'` as a quotation character a `;` as a field seperator and using windows `\r\n` line seperators instead of the *nix `\n`.
+In this specific case using `'` as a quotation character a `;` as a field separator and using windows `\r\n` line separators instead of the *nix `\n`.
 
 The easiest and fastest way of course is just to use the `defaultParsers` who are defined as `defaultParsers = makeParsers '"' "," "\n"`.
