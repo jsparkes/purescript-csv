@@ -6,11 +6,10 @@ import Control.Alt ((<|>))
 import Data.Array (some)
 import Data.Foldable (all)
 import Data.List (List(..), zip)
-import Data.List.NonEmpty as NEL
 import Data.Map as M
 import Data.String.CodeUnits (fromCharArray, toCharArray, singleton)
 import Parsing (Parser)
-import Parsing.Combinators (between, sepBy, sepBy1, sepEndBy)
+import Parsing.Combinators (between, sepBy, sepEndBy)
 import Parsing.String (eof, satisfy, string)
 
 type P a = Parser String a
